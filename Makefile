@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY: help all cluster-create cluster-delete helm-repos envoy-gateway argo-events minio argo-workflows clean post-install-notes ## Declare all command targets as phony
+.PHONY: help all cluster-create cluster-delete helm-repos envoy-gateway argo-events minio argo-workflows clean post-install-notes install-prereqs check-prereqs install-homebrew ## Declare all command targets as phony
 
 # --- Configuration Variables ---
 K3D_CLUSTER_NAME = test-cluster
@@ -47,7 +47,7 @@ MINIO_ROUTE_TMP = $(MINIO_ROUTE_YAML).tmp
 ARGO_ROUTE_TMP = $(ARGO_ROUTE_YAML).tmp
 
 # --- Default Target ---
-all: cluster-create helm-repos envoy-gateway argo-events minio argo-workflows ## Deploys the complete stack (cluster, envoy, events, minio, workflows)
+all: install-prereqs cluster-create helm-repos envoy-gateway argo-events minio argo-workflows ## Deploys the complete stack (cluster, envoy, events, minio, workflows)
 
 # --- Help Message ---
 help: ## Display this help message
@@ -64,6 +64,61 @@ help: ## Display this help message
 	@echo "                   Example override: make all USER_IP=192.168.1.100"
 	@echo "                   Example override: make all USER_IP=my.cluster.domain.com"
 
+# --- Prerequisites Check & Install ---
+
+install-prereqs: ## Install necessary tools (kubectl, helm, k3d) via Homebrew (if on macOS/Linux)
+	@echo "=== Checking and Installing Prerequisites ==="
+	# Check for brew and install if necessary
+	@if ! command -v brew >/dev/null 2>&1; then \
+		echo "Homebrew not found. Attempting to install Homebrew..."; \
+		/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
+		echo "---"; \
+		echo "Homebrew installation finished. You might need to open a new terminal session or source your shell profile (e.g., ~/.bashrc, ~/.zshrc) for 'brew' to be available in your PATH."; \
+		echo "If 'brew' is not found after this step, please fix your shell environment and run 'make install-prereqs' again."; \
+		echo "---"; \
+		# Exit to force user to fix PATH if necessary before tool installs proceed
+		exit 1; \
+	fi
+	@echo "Homebrew found."
+
+	# Check if brew command is actually working after install (might need sourcing)
+	@if ! command -v brew >/dev/null 2>&1; then \
+		echo "Error: 'brew' command not found after installation attempt. Please ensure Homebrew is in your PATH and try again."; \
+		exit 1; \
+	fi
+
+	# Check and install kubectl
+	@if ! command -v kubectl >/dev/null 2>&1; then \
+		echo "kubectl not found. Installing kubectl via Homebrew..."; \
+		brew install kubectl; \
+	else \
+		echo "kubectl already installed."; \
+	fi
+
+	# Check and install helm
+	@if ! command -v helm >/dev/null 2>&1; then \
+		echo "helm not found. Installing helm via Homebrew..."; \
+		brew install helm; \
+	else \
+		echo "helm already installed."; \
+	fi
+
+	# Check and install k3d
+	@if ! command -v k3d >/dev/null 2>&1; then \
+		echo "k3d not found. Installing k3d via Homebrew..."; \
+		brew install k3d; \
+	else \
+		echo "k3d already installed."; \
+	fi
+	@echo "Prerequisite check/installation complete."
+
+check-prereqs: ## Check if necessary tools (kubectl, helm, k3d, brew) are installed
+	@echo "=== Checking for Prerequisites ==="
+	@command -v brew >/dev/null 2>&1 && echo "brew: Found" || echo "brew: Not Found"
+	@command -v kubectl >/dev/null 2>&ll 2>&1 && echo "kubectl: Found" || echo "kubectl: Not Found"
+	@command -v helm >/dev/null 2>&1 && echo "helm: Found" || echo "helm: Not Found"
+	@command -v k3d >/dev/null 2>&1 && echo "k3d: Found" || echo "k3d: Not Found"
+	@echo "Prerequisite check complete."
 
 # --- Setup Steps ---
 
