@@ -1,0 +1,24 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: argo-httproute
+  namespace: argo
+spec:
+  hostnames:
+    # This IP is a placeholder that will be replaced by the Makefile
+    # based on the USER_IP variable (defaulting to 127.0.0.1 for local access)
+    - "argo.192.168.64.26.nip.io"
+  parentRefs:
+    - name: default-gateway
+      namespace: envoy-gateway-system
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: wf-argo-workflows-server
+          port: 2746
+          weight: 1
+      timeouts:
+        request: 300s
