@@ -1,13 +1,11 @@
-import os
-
 from hera.workflows import DAG, Workflow, WorkflowsService, script
 
-os.environ["ARGO_SERVER"] = "http://argo.10.145.85.4.nip.io"
-os.environ["ARGO_HTTP1"] = "true"
-os.environ["ARGO_SECURE"] = "false"
-os.environ["ARGO_BASE_HREF"] = ""
-os.environ["ARGO_TOKEN"] = ""
-os.environ["ARGO_NAMESPACE"] = "argo"
+ARGO_SERVER = "http://argo.10.145.85.4.nip.io"
+ARGO_HTTP1 = "true"
+ARGO_SECURE = "false"
+ARGO_BASE_HREF = ""
+ARGO_TOKEN = ""
+ARGO_NAMESPACE = "argo"
 
 
 # Turn a function into a reusable "Script template"
@@ -21,10 +19,10 @@ def echo(message: str):
 with Workflow(
     generate_name="dag-diamond-",
     entrypoint="diamond",
-    namespace=os.environ["ARGO_NAMESPACE"],
+    namespace=ARGO_NAMESPACE,
     workflows_service=WorkflowsService(
-        host=os.environ["ARGO_SERVER"],
-        verify_ssl=False,
+        host=ARGO_SERVER,
+        verify_ssl=ARGO_SECURE,
     ),
     service_account_name="wf-argo-workflows-server",
 ) as w:
