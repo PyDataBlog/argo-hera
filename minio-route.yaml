@@ -1,17 +1,22 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: minio-httproute
+  name: minio-route
   namespace: argo
 spec:
-  hostnames:
-    # This IP is a placeholder that will be replaced by the Makefile
-    # based on the USER_IP variable (defaulting to 127.0.0.1 for local access)
-    - "minio.192.168.64.26.nip.io"
   parentRefs:
     - name: default-gateway
       namespace: envoy-gateway-system
+  hostnames:
+    - "minio.10.145.85.4.nip.io"
   rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /ui
+      backendRefs:
+        - name: argo-artifacts-console
+          port: 9001
     - matches:
         - path:
             type: PathPrefix
@@ -19,4 +24,3 @@ spec:
       backendRefs:
         - name: argo-artifacts
           port: 9000
-          weight: 1

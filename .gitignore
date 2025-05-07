@@ -1,0 +1,60 @@
+bin
+obj
+csx
+.vs
+edge
+Publish
+
+*.user
+*.suo
+*.cscfg
+*.Cache
+project.lock.json
+
+/packages
+/TestResults
+
+/tools/NuGet.exe
+/App_Data
+/secrets
+/data
+.secrets
+appsettings.json
+local.settings.json
+
+node_modules
+dist
+
+# Local python packages
+.python_packages/
+
+# Python Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+env39/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# http stuff
+localhost.http
+
+# VSCode
+**/.vscode
+
+# Tests etc.
+.pytest_cache/
+.mypy_cache/
+.vscode/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+Pipfile

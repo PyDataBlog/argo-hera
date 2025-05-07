@@ -3,7 +3,7 @@ kind: GatewayClass
 metadata:
   name: eg
 spec:
-  controllerName: gateway.networking.k8s.io/gatewayclass-controller
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway

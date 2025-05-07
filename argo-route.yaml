@@ -5,9 +5,7 @@ metadata:
   namespace: argo
 spec:
   hostnames:
-    # This IP is a placeholder that will be replaced by the Makefile
-    # based on the USER_IP variable (defaulting to 127.0.0.1 for local access)
-    - "argo.192.168.64.26.nip.io"
+    - "argo.10.145.85.4.nip.io"
   parentRefs:
     - name: default-gateway
       namespace: envoy-gateway-system

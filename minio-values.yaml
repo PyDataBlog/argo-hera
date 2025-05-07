@@ -20,3 +20,12 @@ service:
 # Disable TLS for testing
 tls:
   enabled: false
+
+# Create buckets after installation
+buckets:
+  - name: argo-artifacts
+    policy: none
+    purge: true
+  - name: test-data
+    policy: none
+    purge: true

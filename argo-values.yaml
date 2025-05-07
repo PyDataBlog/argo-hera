@@ -45,7 +45,7 @@ useStaticCredentials: true
 artifactRepository:
   archiveLogs: false
   s3:
-    bucket: my-bucket # Create this bucket in MinIO
+    bucket: argo-artifacts # INFO: Needs to be created
     endpoint: argo-artifacts.argo.svc:9000
     insecure: true
     accessKeySecret:
