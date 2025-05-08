@@ -12,13 +12,13 @@ MINIO_PASSWORD := minioadmin
 
 FILES_TO_UPDATE_IP := \
     test/test_workflow.py \
-    minio-route.yaml \
-    hello_world.py \
-    etl.py \
-    main.py \
-    artifacts_passing.py \
-    argo-route.yaml \
-    retry_workflow.py
+    kubernetes/minio-route.yaml \
+    workflows/hello_world.py \
+    workflows/etl.py \
+    workflows/main.py \
+    workflows/artifacts_passing.py \
+    kubernetes/argo-route.yaml \
+    workflows/retry_workflow.py
 
 # Default target
 .PHONY: all
@@ -41,7 +41,7 @@ install-all: install-envoy install-minio install-argo-events install-argo
 install-envoy:
 	@echo "Installing Envoy Gateway..."
 	helm install eg oci://docker.io/envoyproxy/gateway-helm --version v1.3.2 -n $(NAMESPACE_ENVOY) --create-namespace --set deployment.replicas=2
-	kubectl apply -f eg.yaml
+	kubectl apply -f kubernetes/eg.yaml
 	kubectl wait --timeout=5m -n envoy-gateway-system deployment/envoy-gateway --for=condition=Available
 
 # Install MinIO
@@ -50,8 +50,8 @@ install-minio:
 	@echo "Installing MinIO..."
 	helm repo add minio https://charts.min.io/
 	helm repo update
-	helm install argo-artifacts minio/minio -f minio-values.yaml -n $(NAMESPACE_ARGO)
-	kubectl apply -f minio-route.yaml
+	helm install argo-artifacts minio/minio -f kubernetes/minio-values.yaml -n $(NAMESPACE_ARGO)
+	kubectl apply -f kubernetes/minio-route.yaml
 	# mc alias set minio-k8s http://minio.$(DOMAIN) $(MINIO_USER) $(MINIO_PASSWORD)
 	# mc mb minio-k8s/argo-artifacts
 
@@ -72,9 +72,9 @@ install-argo:
 	helm repo add argo https://argoproj.github.io/argo-helm
 	helm repo update
 	kubectl create ns $(NAMESPACE_WORKFLOWS)
-	helm upgrade --install wf argo/argo-workflows -n $(NAMESPACE_ARGO) -f argo-values.yaml
-	kubectl apply -f argo-route.yaml
-	kubectl apply -f argo-roles.yaml
+	helm upgrade --install wf argo/argo-workflows -n $(NAMESPACE_ARGO) -f kubernetes/argo-values.yaml
+	kubectl apply -f kubernetes/argo-route.yaml
+	kubectl apply -f kubernetes/argo-roles.yaml
 
 # Update IP in project files
 .PHONY: update-ip-in-files
@@ -95,7 +95,7 @@ run-sample:
 	ARGO_SECURE=false \
 	ARGO_BASE_HREF= \
 	ARGO_TOKEN='' \
-	argo submit -n $(NAMESPACE_ARGO) --watch sample-workflow.yaml
+	argo submit -n $(NAMESPACE_ARGO) --watch kubernetes/sample-workflow.yaml
 
 # Help target
 .PHONY: help
