@@ -65,6 +65,28 @@ This will:
 - Install Argo Events
 - Install Argo Workflows with appropriate configuration
 
+### 4. Setting User IP
+
+The `Makefile` uses a `USER_IP` variable, which defaults to `10.145.85.4`. This IP is used for configuring access to services like MinIO and Argo Workflows.
+
+You can override this IP in two ways:
+
+- **Command-line argument:**
+  ```bash
+  make USER_IP=your_ip_address <target>
+  # Example: make USER_IP=192.168.1.100 all
+  ```
+
+- **Environment variable:**
+  ```bash
+  export USER_IP=your_ip_address
+  make <target>
+  # Or for a single command:
+  # USER_IP=your_ip_address make <target>
+  ```
+
+If you don't provide `USER_IP`, the default value will be used.
+
 ## Examples
 
 ### Hello World Workflow

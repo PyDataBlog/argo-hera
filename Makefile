@@ -1,17 +1,28 @@
 # Project: Argo Hera
 # Variables
+USER_IP ?= 10.145.85.4
 CLUSTER_NAME := test-cluster
 NAMESPACE_ARGO := argo
 NAMESPACE_EVENTS := argo-events
 NAMESPACE_WORKFLOWS := workflows
 NAMESPACE_ENVOY := envoy-gateway-system
-DOMAIN := 10.145.85.4.nip.io
+DOMAIN := $(USER_IP).nip.io
 MINIO_USER := minioadmin
 MINIO_PASSWORD := minioadmin
 
+FILES_TO_UPDATE_IP := \
+    test/test_workflow.py \
+    minio-route.yaml \
+    hello_world.py \
+    etl.py \
+    main.py \
+    artifacts_passing.py \
+    argo-route.yaml \
+    retry_workflow.py
+
 # Default target
 .PHONY: all
-all: cluster install-all
+all: update-ip-in-files cluster install-all
 
 # Setup cluster
 .PHONY: cluster
@@ -64,6 +75,16 @@ install-argo:
 	helm upgrade --install wf argo/argo-workflows -n $(NAMESPACE_ARGO) -f argo-values.yaml
 	kubectl apply -f argo-route.yaml
 	kubectl apply -f argo-roles.yaml
+
+# Update IP in project files
+.PHONY: update-ip-in-files
+update-ip-in-files:
+	@echo "Updating IP address to $(USER_IP) in specified files..."
+	@for file in $(FILES_TO_UPDATE_IP); do \
+		echo "Updating IP in $$file..."; \
+		sed -i 's/10\\.145\\.85\\.4/$(USER_IP)/g' $$file; \
+	done
+	@echo "IP address update complete in files."
 
 # Run sample workflow
 .PHONY: run-sample
