@@ -2,7 +2,7 @@ from hera.workflows import DAG, RetryStrategy, Workflow, WorkflowsService, scrip
 
 ARGO_SERVER = "http://argo.10.145.85.4.nip.io"
 ARGO_HTTP1 = "true"
-ARGO_SECURE = "false"
+ARGO_SECURE = False
 ARGO_BASE_HREF = ""
 ARGO_TOKEN = ""
 ARGO_NAMESPACE = "argo"

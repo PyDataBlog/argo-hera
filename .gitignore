@@ -58,3 +58,4 @@ localhost.http
 coverage.xml
 htmlcov/
 Pipfile
+Session.vim
