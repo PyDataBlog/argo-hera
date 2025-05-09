@@ -65,36 +65,58 @@ This will:
 - Install Argo Events
 - Install Argo Workflows with appropriate configuration
 
+### 4. Setting User IP
+
+The `Makefile` uses a `USER_IP` variable, which defaults to `10.145.85.4`. This IP is used for configuring access to services like MinIO and Argo Workflows.
+
+You can override this IP in two ways:
+
+- **Command-line argument:**
+  ```bash
+  make USER_IP=your_ip_address <target>
+  # Example: make USER_IP=192.168.1.100 all
+  ```
+
+- **Environment variable:**
+  ```bash
+  export USER_IP=your_ip_address
+  make <target>
+  # Or for a single command:
+  # USER_IP=your_ip_address make <target>
+  ```
+
+If you don't provide `USER_IP`, the default value will be used.
+
 ## Examples
 
 ### Hello World Workflow
 
 ```bash
-python hello_world.py
+python workflows/hello_world.py
 ```
 
 ### Diamond DAG Workflow
 
 ```bash
-python main.py
+python workflows/main.py
 ```
 
 ### ETL Pipeline Example
 
 ```bash
-python etl.py
+python workflows/etl.py
 ```
 
 ### Artifact Passing Between Tasks
 
 ```bash
-python artifacts_passing.py
+python workflows/artifacts_passing.py
 ```
 
 ### Retrying Failed Tasks
 
 ```bash
-python retry_workflow.py
+python workflows/retry_workflow.py
 ```
 
 ### Run sample workflow from YAML
@@ -113,17 +135,17 @@ pytest
 
 ## Project Structure
 
-- `argo-roles.yaml`: RBAC roles for Argo Workflows
-- `argo-route.yaml`: HTTP route for Argo server
-- `argo-values.yaml`: Helm values for Argo Workflows
-- `minio-values.yaml`: Helm values for MinIO
-- `eg.yaml`: Envoy Gateway configuration
-- Python examples:
-  - `hello_world.py`: Simple workflow example
-  - `main.py`: DAG diamond pattern workflow
-  - `etl.py`: ETL pipeline example
-  - `artifacts_passing.py`: Example of passing artifacts between tasks
-  - `retry_workflow.py`: Example of retrying failed tasks
+- `kubernetes/argo-roles.yaml`: RBAC roles for Argo Workflows
+- `kubernetes/argo-route.yaml`: HTTP route for Argo server
+- `kubernetes/argo-values.yaml`: Helm values for Argo Workflows
+- `kubernetes/minio-values.yaml`: Helm values for MinIO
+- `kubernetes/eg.yaml`: Envoy Gateway configuration
+- Python examples in `workflows/`:
+  - `workflows/hello_world.py`: Simple workflow example
+  - `workflows/main.py`: DAG diamond pattern workflow
+  - `workflows/etl.py`: ETL pipeline example
+  - `workflows/artifacts_passing.py`: Example of passing artifacts between tasks
+  - `workflows/retry_workflow.py`: Example of retrying failed tasks
 - `test/`: Test files
 
 ## Resources
